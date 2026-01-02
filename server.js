@@ -1,20 +1,20 @@
 const express = require("express");
-const fetch = require("node-fetch"); // optional if Node 18+
+const fetch = require("node-fetch");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve Flutter Web static files
+// Serve Flutter Web build
 app.use(express.static(path.join(__dirname, "public")));
 
-// Proxy endpoint for API
+// Proxy endpoint
 app.get("/api/get_questions", async (req, res) => {
   try {
     const response = await fetch(
       "https://thinkglobal.gt.tc/quiz_api/get_questions.php"
     );
-    const data = await response.text();
+    const data = await response.text(); // or response.json() if JSON
     res.setHeader("Content-Type", "application/json");
     res.send(data);
   } catch (error) {
@@ -23,7 +23,7 @@ app.get("/api/get_questions", async (req, res) => {
   }
 });
 
-// Serve index.html for Flutter routing
+// Flutter Web fallback
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
